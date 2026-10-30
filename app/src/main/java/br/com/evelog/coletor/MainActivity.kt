@@ -189,7 +189,7 @@ class MainActivity : Activity() {
         page.addView(batchNameInput, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(10) })
 
         operatorNameInput = EditText(this).apply {
-            hint = "Nome do operador (obrigatório)"
+            hint = "Nome do operador"
             setSingleLine(true)
             textSize = 15f
             setPadding(dp(14), dp(13), dp(14), dp(13))
@@ -814,7 +814,7 @@ class MainActivity : Activity() {
         }
         AlertDialog.Builder(this)
             .setTitle("Sobre o Coletor Evelog")
-            .setMessage("Versão $version\n\nLeitor de etiquetas padrão Jadlog (ShipmentId).")
+            .setMessage("Versão $version\n\nSó Leitor de etiquetas padrão Jadlog.")
             .setPositiveButton("Fechar", null)
             .show()
     }
