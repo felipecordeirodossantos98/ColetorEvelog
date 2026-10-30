@@ -814,7 +814,7 @@ class MainActivity : Activity() {
         }
         AlertDialog.Builder(this)
             .setTitle("Sobre o Coletor Evelog")
-            .setMessage("Versão $version\n\nSó Leitor de etiquetas padrão Jadlog.")
+            .setMessage("Versão $version\n\nLeitor de etiquetas padrão Jadlog.")
             .setPositiveButton("Fechar", null)
             .show()
     }
