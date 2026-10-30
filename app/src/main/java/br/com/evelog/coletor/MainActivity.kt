@@ -175,7 +175,7 @@ class MainActivity : Activity() {
         page.addView(totalCount)
 
         batchNameInput = EditText(this).apply {
-            hint = "Lote (número da rua, somente números)"
+            hint = "Lote (número da rua)"
             setSingleLine(true)
             inputType = InputType.TYPE_CLASS_NUMBER
             filters = arrayOf(InputFilter { source, start, end, _, _, _ ->
@@ -572,7 +572,7 @@ class MainActivity : Activity() {
                     batch.closedAt != null -> "AGUARDANDO EXPORTAÇÃO"
                     else -> "SERÁ EXPORTADO AO FECHAR O LOTE"
                 }
-                card.addView(label("$exportState\nETIQUETAS EM SEQUÊNCIA\n${formatSequentialEntries(batch.entries)}", 14f, TEXT_PRIMARY).apply {
+                card.addView(label("$exportState\n\n${formatSequentialEntries(batch.entries)}", 14f, TEXT_PRIMARY).apply {
                     setPadding(dp(16), dp(8), dp(16), dp(16))
                     typeface = android.graphics.Typeface.MONOSPACE
                 }, LinearLayout.LayoutParams(-1, -2))

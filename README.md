@@ -26,4 +26,4 @@ Se a política corporativa do coletor restringir APIs do DataWedge, o administra
 
 ## Gerar o APK
 
-Abra a pasta no Android Studio e aguarde a sincronização do Gradle. O módulo `app` define `minSdk 23`, `targetSdk 35` e `compileSdk 35`. Gere o APK por **Build > Build Bundle(s) / APK(s) > Build APK(s)**. A versão atual é 1.27 (versionCode 28); o APK gerado é nomeado `Coletor-Evelog-v1.27.apk`.
+Abra a pasta no Android Studio e aguarde a sincronização do Gradle. O módulo `app` define `minSdk 23`, `targetSdk 35` e `compileSdk 35`. Gere o APK por **Build > Build Bundle(s) / APK(s) > Build APK(s)**. A versão atual é 1.28 (versionCode 29); o APK gerado é nomeado `Coletor-Evelog-v1.28.apk`.
