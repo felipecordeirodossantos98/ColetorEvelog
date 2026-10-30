@@ -268,9 +268,7 @@ class MainActivity : Activity() {
             showDeleteBatchSelectionDialog()
         }, LinearLayout.LayoutParams(-1, dp(54)).apply { bottomMargin = dp(18) })
 
-        page.addView(label("ETIQUETAS DO LOTE EM SEQUÊNCIA", 13f, TEXT_SECONDARY, true).apply {
-            setPadding(dp(2), dp(2), 0, dp(8))
-        })
+        page.addView(View(this), LinearLayout.LayoutParams(-1, dp(26)))
         recent = label("", 14f, TEXT_PRIMARY).apply {
             setPadding(dp(16), dp(14), dp(16), dp(14))
             background = rounded(Color.WHITE, 16f, BORDER)
@@ -506,13 +504,9 @@ class MainActivity : Activity() {
     }
 
     private fun refreshRecent() {
-        val batch = activeBatch ?: batches.lastOrNull()
+        val batch = activeBatch
         if (batch == null) {
-            recent.text = "Nenhuma etiqueta registrada ainda."
-            return
-        }
-        if (activeBatch == null) {
-            recent.text = "Último lote fechado · Lote Rua ${batch.name}\n${formatSequentialEntries(batch.entries)}"
+            recent.text = ""
             return
         }
         recent.text = "LOTE RUA ${batch.name} · EM LEITURA\n${shipmentCount(batch)} Shipment ID(s) · ${batch.entries.size} etiqueta(s)\n\n${formatSequentialEntries(batch.entries)}"
@@ -576,7 +570,7 @@ class MainActivity : Activity() {
                     batch.closedAt != null -> "AGUARDANDO EXPORTAÇÃO"
                     else -> "SERÁ EXPORTADO AO FECHAR O LOTE"
                 }
-                card.addView(label("$exportState\nETIQUETAS EM SEQUÊNCIA\n${formatSequentialEntries(batch.entries)}", 14f, TEXT_PRIMARY).apply {
+                card.addView(label("$exportState\n\n${formatSequentialEntries(batch.entries)}", 14f, TEXT_PRIMARY).apply {
                     setPadding(dp(16), dp(8), dp(16), dp(16))
                     typeface = android.graphics.Typeface.MONOSPACE
                 }, LinearLayout.LayoutParams(-1, -2))

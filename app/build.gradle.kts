@@ -20,8 +20,8 @@ android {
         applicationId = "br.com.evelog.coletor"
         minSdk = 23
         targetSdk = 35
-        versionCode = 26
-        versionName = "1.25"
+        versionCode = 27
+        versionName = "1.26"
     }
 }
 
