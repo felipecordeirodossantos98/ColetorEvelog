@@ -157,13 +157,6 @@ class MainActivity : Activity() {
         })
         page.addView(header, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(16) })
 
-        page.addView(label("JADLOG  ·  SHIPMENTID", 13f, BRAND_BLUE, true).apply {
-            setPadding(dp(2), 0, 0, dp(5))
-        })
-        page.addView(label("Somente etiquetas padrão Jadlog (ShipmentId) serão registradas. Formato: 14 dígitos + $ + 12 dígitos.", 15f, TEXT_SECONDARY).apply {
-            setPadding(dp(2), 0, dp(2), dp(14))
-        })
-
         status = label("PRONTO PARA LER", 16f, SUCCESS_TEXT, true).apply {
             setPadding(dp(16), dp(16), dp(16), dp(16))
             background = rounded(SUCCESS_BG, 16f)
@@ -519,7 +512,7 @@ class MainActivity : Activity() {
             return
         }
         if (activeBatch == null) {
-            recent.text = "Último lote fechado · Lote Rua ${batch.name}\n${formatSequentialEntries(batch.entries)}\nInicie um novo lote para continuar."
+            recent.text = "Último lote fechado · Lote Rua ${batch.name}\n${formatSequentialEntries(batch.entries)}"
             return
         }
         recent.text = "LOTE RUA ${batch.name} · EM LEITURA\n${shipmentCount(batch)} Shipment ID(s) · ${batch.entries.size} etiqueta(s)\n\n${formatSequentialEntries(batch.entries)}"
@@ -750,7 +743,6 @@ class MainActivity : Activity() {
             appendLine("Shipment IDs: ${shipmentCount(batch)}")
             appendLine("Etiquetas: ${batch.entries.size}")
             appendLine()
-            appendLine("ETIQUETAS EM SEQUÊNCIA")
             appendLine(formatSequentialEntries(batch.entries))
         }
         contentResolver.openOutputStream(fileUri, "wt")?.bufferedWriter(Charsets.UTF_8)?.use { it.write(content) }
