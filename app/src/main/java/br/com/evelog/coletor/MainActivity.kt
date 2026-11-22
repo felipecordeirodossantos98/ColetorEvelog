@@ -73,7 +73,9 @@ class MainActivity : Activity() {
     private lateinit var input: EditText
     private lateinit var startBatchButton: Button
     private lateinit var closeBatchButton: Button
+    private lateinit var deleteLabelButton: Button
     private lateinit var exportBatchButton: Button
+    private var deleteLabelMode = false
     private var tone: ToneGenerator? = null
 
     private val scanReceiver = object : BroadcastReceiver() {
@@ -224,6 +226,11 @@ class MainActivity : Activity() {
         }
         page.addView(closeBatchButton, LinearLayout.LayoutParams(-1, dp(54)).apply { bottomMargin = dp(10) })
 
+        deleteLabelButton = actionButton("Excluir etiqueta", Color.WHITE, BRAND_RED, BRAND_RED) {
+            if (deleteLabelMode) cancelDeleteLabelMode() else confirmEnableDeleteLabelMode()
+        }
+        page.addView(deleteLabelButton, LinearLayout.LayoutParams(-1, dp(54)).apply { bottomMargin = dp(10) })
+
         var applyingManualFormat = false
         input = EditText(this).apply {
             hint = "Leitura manual (opcional)"
@@ -295,6 +302,7 @@ class MainActivity : Activity() {
 
     private fun startBatch() {
         if (activeBatch != null) return
+        deleteLabelMode = false
         val now = System.currentTimeMillis()
         val requestedName = batchNameInput.text.toString().trim()
         val operator = operatorNameInput.text.toString().trim()
@@ -330,6 +338,7 @@ class MainActivity : Activity() {
     private fun confirmCloseBatch() {
         val batch = activeBatch ?: return
         if (batch.entries.isEmpty()) {
+            deleteLabelMode = false
             batches.remove(batch)
             saveBatches()
             refreshScreen()
@@ -364,6 +373,7 @@ class MainActivity : Activity() {
     }
 
     private fun closeBatch(batch: LabelBatch) {
+        deleteLabelMode = false
         batch.closedAt = System.currentTimeMillis()
         saveBatches()
         autoExportBatch(batch)
@@ -389,6 +399,10 @@ class MainActivity : Activity() {
             showResult("NÃO VÁLIDA", "Formato inválido: $code", false)
             return
         }
+        if (deleteLabelMode) {
+            confirmDeleteScannedLabel(batch, code)
+            return
+        }
         val originalBatch = batches.firstOrNull { it.entries.containsKey(code) }
         if (originalBatch != null) {
             showResult("DUPLICADA", "Etiqueta já registrada no Lote Rua ${originalBatch.name}\n$code", false, duplicate = true)
@@ -401,6 +415,63 @@ class MainActivity : Activity() {
         refreshHistory()
         refreshBatchControls()
         showResult("VÁLIDA · REGISTRADA", code, true)
+    }
+
+    private fun confirmEnableDeleteLabelMode() {
+        val batch = activeBatch ?: return
+        AlertDialog.Builder(this)
+            .setTitle("Excluir etiqueta do lote?")
+            .setMessage("Depois de ativar, escaneie novamente a etiqueta que deseja remover do Lote Rua ${batch.name}. O app pedirá uma confirmação antes de excluir.")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Ativar exclusão") { _, _ ->
+                deleteLabelMode = true
+                refreshBatchControls()
+                status.text = "MODO DE EXCLUSÃO\nEscaneie a etiqueta que deseja remover do Lote Rua ${batch.name}."
+                status.setTextColor(ERROR_TEXT)
+                status.background = rounded(ERROR_BG, 16f)
+            }
+            .show()
+    }
+
+    private fun cancelDeleteLabelMode() {
+        deleteLabelMode = false
+        refreshBatchControls()
+        refreshScreen()
+    }
+
+    private fun confirmDeleteScannedLabel(batch: LabelBatch, code: String) {
+        if (batch.entries[code] == null) {
+            showResult("NÃO ENCONTRADA", "A etiqueta não está no Lote Rua ${batch.name}.\n$code", false)
+            status.text = "NÃO ENCONTRADA\nA etiqueta não está no Lote Rua ${batch.name}.\n$code\n\nModo de exclusão continua ativo."
+            status.setTextColor(ERROR_TEXT)
+            status.background = rounded(ERROR_BG, 16f)
+            return
+        }
+
+        deleteLabelMode = false
+        refreshBatchControls()
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Confirmar exclusão")
+            .setMessage("Remover esta etiqueta do Lote Rua ${batch.name}?\n\n$code\n\nSomente esta etiqueta será removida deste lote.")
+            .setNegativeButton("Manter etiqueta") { _, _ ->
+                refreshScreen()
+                status.text = "EXCLUSÃO CANCELADA\nA etiqueta foi mantida no lote."
+                status.setTextColor(BRAND_BLUE)
+                status.background = rounded(INFO_BG, 16f)
+            }
+            .setPositiveButton("Excluir etiqueta") { _, _ ->
+                if (batch.entries.remove(code) != null) {
+                    saveBatches()
+                    refreshScreen()
+                    status.text = "ETIQUETA EXCLUÍDA\nLote Rua ${batch.name}\n$code"
+                    status.setTextColor(SUCCESS_TEXT)
+                    status.background = rounded(SUCCESS_BG, 16f)
+                    tone?.startTone(ToneGenerator.TONE_PROP_ACK, 140)
+                }
+            }
+            .create()
+        dialog.setOnCancelListener { refreshScreen() }
+        dialog.show()
     }
 
     /** Requests DataWedge to create and associate this app's scanner profile. */
@@ -498,6 +569,8 @@ class MainActivity : Activity() {
         typeInput.visibility = if (hasActive) android.view.View.GONE else android.view.View.VISIBLE
         startBatchButton.visibility = if (hasActive) android.view.View.GONE else android.view.View.VISIBLE
         closeBatchButton.visibility = if (hasActive) android.view.View.VISIBLE else android.view.View.GONE
+        deleteLabelButton.visibility = if (hasActive) android.view.View.VISIBLE else android.view.View.GONE
+        deleteLabelButton.text = if (deleteLabelMode) "Cancelar exclusão" else "Excluir etiqueta"
         input.visibility = if (hasActive) android.view.View.VISIBLE else android.view.View.GONE
         closeBatchButton.isEnabled = hasActive
         closeBatchButton.alpha = if (closeBatchButton.isEnabled) 1f else 0.5f

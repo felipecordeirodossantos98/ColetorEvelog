@@ -10,6 +10,7 @@ Aplicativo Android nativo em Kotlin para o Zebra TC52. O padrão aceito é exata
 - Organiza a operação em lotes identificados como **Lote Rua [número]**, com número da rua, operador e tipo (Transferência ou Entrada) obrigatórios. Lotes sem etiquetas são descartados e nunca gravados.
 - Registra e exibe as etiquetas em sequência de leitura, sem agrupá-las por Shipment ID. O TXT mantém no cabeçalho os totais de Shipment IDs e etiquetas para análise em outro sistema.
 - A senha `admin` é exigida para fechar lotes com etiquetas e para apagar lotes selecionados.
+- No lote aberto, **Excluir etiqueta** ativa um modo dedicado: escaneie a etiqueta novamente e confirme sua remoção do lote.
 - Retoma automaticamente um lote que ficou aberto se o app for fechado ou o coletor reiniciar.
 - Aceita apenas um lote aberto por vez e bloqueia códigos duplicados também entre lotes.
 - Em **⋮ > Configurações**, selecione uma pasta de destino, inclusive no Google Drive. Ao fechar o lote, exporta automaticamente um TXT com tipo, identificação Lote Rua, operador, data/hora, totais de Shipment IDs/etiquetas e os códigos em sequência. O histórico mostra o estado da exportação e permite repetir exportações pendentes.
@@ -26,4 +27,4 @@ Se a política corporativa do coletor restringir APIs do DataWedge, o administra
 
 ## Gerar o APK
 
-Abra a pasta no Android Studio e aguarde a sincronização do Gradle. O módulo `app` define `minSdk 23`, `targetSdk 35` e `compileSdk 35`. Gere o APK por **Build > Build Bundle(s) / APK(s) > Build APK(s)**. A versão atual é 1.30 (versionCode 31); o APK gerado é nomeado `Coletor-Evelog-v1.30.apk`.
+Abra a pasta no Android Studio e aguarde a sincronização do Gradle. O módulo `app` define `minSdk 23`, `targetSdk 35` e `compileSdk 35`. Gere o APK por **Build > Build Bundle(s) / APK(s) > Build APK(s)**. A versão atual é 1.31 (versionCode 32); o APK gerado é nomeado `Coletor-Evelog-v1.31.apk`.
